@@ -109,10 +109,9 @@ export default class Carts {
             let cart = await cartsModel.findById(cartObjectId)           
             // Verificar si ya existe el producto en el carrito
             const existingProduct = cart.products.find(product => product.productId.equals(productId));
-    
             if (existingProduct) {
                 // Si el producto ya está en el carrito, actualizar la cantidad
-                existingProduct.quantity += quantity;
+                existingProduct.quantity += parseInt(quantity, 10);
             } else {
                 // Si el producto no está en el carrito, agregarlo
                 cart.products.push({
