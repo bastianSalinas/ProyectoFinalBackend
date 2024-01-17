@@ -4,7 +4,7 @@ export let Carts
 export let Products
 export let Users
 export let Tickets
-switch (config.persistence) {
+switch (process.env.PERSISTENCE) {
     case "MONGO":
         const connection = mongoose.connect(config.mongo_url)
         const { default: CartsMongo } = await import('./mongo/carts.mongo.js')
