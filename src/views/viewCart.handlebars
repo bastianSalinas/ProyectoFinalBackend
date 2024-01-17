@@ -28,6 +28,10 @@
         <p>Suma Total: ${{calculateSumTotal carts.products}}</p>
        <p id="totalPriceDisplay"></p> 
         <form action="/checkout" method="GET">
+            {{#each carts.products}}
+            <input type="hidden" name="products[]" value="{{this.productId._id}}">
+            <input type="hidden" name="quantities[]" value="{{this.quantity}}">
+            {{/each}}
             <!-- Puedes agregar campos ocultos para enviar información adicional si es necesario -->
             <input type="hidden" name="cartId" value="{{carts._id}}">
             <input type="hidden" name="purchaser" value="{{user}}">

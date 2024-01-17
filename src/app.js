@@ -404,6 +404,31 @@ app.get("/checkout", async (req, res) => {
     let cart_Id = req.query.cartId
     let purchaser = req.query.purchaser
     let totalAmount = req.query.totalPrice
+
+    let productIds = req.query.products || [];
+    let quantities = req.query.quantities || [];
+
+    if (productIds.length > 0 && quantities.length > 0 && productIds.length === quantities.length) {
+        // Iterar sobre los productos en el carrito
+        for (let i = 0; i < productIds.length; i++) {
+            let productId = productIds[i];
+            let quantity = quantities[i];
+
+            // Obtener el producto correspondiente a través del productId
+            let product = await products.getProductById(productId);
+            // Verificar si el producto existe y tiene suficiente stock
+            if (product && product.stock >= quantity) {
+                // Restar la cantidad del producto al stock del producto
+                product.stock -= quantity;
+
+                await products.updateProduct(productId, { stock: product.stock });
+            } else {
+                // Manejar el caso en que el producto no existe o no hay suficiente stock
+                return res.status(400).send("Error: Producto no disponible o stock insuficiente");
+            }
+        }
+    }
+
     let newCart = await carts.addCart()
     let newIdCart = newCart._id.toString()
     let updateUser = await users.updateIdCartUser({email: purchaser, newIdCart})
